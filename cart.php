@@ -261,7 +261,7 @@
             
                     $get_manufacturer = "select * from manufacturers where manufacturer_id='$manufacturer_id'";
             
-                    $run_manufacturer = mysqli_query($db,$get_manufacturer);
+                    $run_manufacturer = mysqli_query($con,$get_manufacturer);
             
                     $row_manufacturer = mysqli_fetch_array($run_manufacturer);
             

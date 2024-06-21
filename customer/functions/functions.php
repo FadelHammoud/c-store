@@ -1,7 +1,7 @@
 <?php 
-require_once 'config.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/c-store/config.php';
 
-$db = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+$con = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
 
 /// begin getRealIpUser functions ///
 
@@ -25,7 +25,7 @@ function getRealIpUser(){
 
 function add_cart(){
     
-    global $db;
+    global $con;
     
     if(isset($_GET['add_cart'])){
         
@@ -39,7 +39,7 @@ function add_cart(){
         
         $check_product = "select * from cart where ip_add='$ip_add' AND p_id='$p_id'";
         
-        $run_check = mysqli_query($db,$check_product);
+        $run_check = mysqli_query($con,$check_product);
         
         if(mysqli_num_rows($run_check)>0){
             
@@ -50,7 +50,7 @@ function add_cart(){
             
             $query = "insert into cart (p_id,ip_add,qty,size) values ('$p_id','$ip_add','$product_qty','$product_size')";
             
-            $run_query = mysqli_query($db,$query);
+            $run_query = mysqli_query($con,$query);
             
             echo "<script>window.open('details.php?pro_id=$p_id','_self')</script>";
             
@@ -66,11 +66,11 @@ function add_cart(){
 
 function getPro(){
     
-    global $db;
+    global $con;
     
     $get_products = "select * from products order by 1 DESC LIMIT 0,8";
     
-    $run_products = mysqli_query($db,$get_products);
+    $run_products = mysqli_query($con,$get_products);
     
     while($row_products=mysqli_fetch_array($run_products)){
         
@@ -146,11 +146,11 @@ function getPro(){
 
 function getPCats(){
     
-    global $db;
+    global $con;
     
     $get_p_cats = "select * from product_categories";
     
-    $run_p_cats = mysqli_query($db,$get_p_cats);
+    $run_p_cats = mysqli_query($con,$get_p_cats);
     
     while($row_p_cats=mysqli_fetch_array($run_p_cats)){
         
@@ -178,11 +178,11 @@ function getPCats(){
 
 function getCats(){
     
-    global $db;
+    global $con;
     
     $get_cats = "select * from categories";
     
-    $run_cats = mysqli_query($db,$get_cats);
+    $run_cats = mysqli_query($con,$get_cats);
     
     while($row_cats=mysqli_fetch_array($run_cats)){
         
@@ -210,7 +210,7 @@ function getCats(){
 
 function getpcatpro(){
     
-    global $db;
+    global $con;
     
     if(isset($_GET['p_cat'])){
         
@@ -218,7 +218,7 @@ function getpcatpro(){
         
         $get_p_cat ="select * from product_categories where p_cat_id='$p_cat_id'";
         
-        $run_p_cat = mysqli_query($db,$get_p_cat);
+        $run_p_cat = mysqli_query($con,$get_p_cat);
         
         $row_p_cat = mysqli_fetch_array($run_p_cat);
         
@@ -228,7 +228,7 @@ function getpcatpro(){
         
         $get_products ="select * from products where p_cat_id='$p_cat_id'";
         
-        $run_products = mysqli_query($db,$get_products);
+        $run_products = mysqli_query($con,$get_products);
         
         $count = mysqli_num_rows($run_products);
         
@@ -336,7 +336,7 @@ function getpcatpro(){
 
 function getcatpro(){
     
-    global $db;
+    global $con;
     
     if(isset($_GET['cat'])){
         
@@ -344,7 +344,7 @@ function getcatpro(){
         
         $get_cat = "select * from categories where cat_id='$cat_id'";
         
-        $run_cat = mysqli_query($db,$get_cat);
+        $run_cat = mysqli_query($con,$get_cat);
         
         $row_cat = mysqli_fetch_array($run_cat);
         
@@ -354,7 +354,7 @@ function getcatpro(){
         
         $get_cat = "select * from products where cat_id='$cat_id' LIMIT 0,6";
         
-        $run_products = mysqli_query($db,$get_cat);
+        $run_products = mysqli_query($con,$get_cat);
         
         $count = mysqli_num_rows($run_products);
         
@@ -461,13 +461,13 @@ function getcatpro(){
 
 function items(){
     
-    global $db;
+    global $con;
     
     $ip_add = getRealIpUser();
     
     $get_items = "select * from cart where ip_add='$ip_add'";
     
-    $run_items = mysqli_query($db,$get_items);
+    $run_items = mysqli_query($con,$get_items);
     
     $count_items = mysqli_num_rows($run_items);
     
@@ -481,7 +481,7 @@ function items(){
 
 function total_price(){
     
-    global $db;
+    global $con;
     
     $ip_add = getRealIpUser();
     
@@ -489,7 +489,7 @@ function total_price(){
     
     $select_cart = "select * from cart where ip_add='$ip_add'";
     
-    $run_cart = mysqli_query($db,$select_cart);
+    $run_cart = mysqli_query($con,$select_cart);
     
     while($record=mysqli_fetch_array($run_cart)){
         
@@ -499,7 +499,7 @@ function total_price(){
         
         $get_price = "select * from products where product_id='$pro_id'";
         
-        $run_price = mysqli_query($db,$get_price);
+        $run_price = mysqli_query($con,$get_price);
         
         while($row_price=mysqli_fetch_array($run_price)){
             

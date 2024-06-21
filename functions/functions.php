@@ -1,8 +1,7 @@
 <?php 
-require_once 'config.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/c-store/config.php';
+$con = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
 
-// $db = mysqli_connect("localhost","root","","tech-shop");
-$db = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
 if (mysqli_connect_errno()) {
     die("Database connection failed: " . mysqli_connect_error());
 }
@@ -28,7 +27,7 @@ function getRealIpUser(){
 
 function add_cart(){
     
-    global $db;
+    global $con;
     
     if(isset($_GET['add_cart'])){
         
@@ -42,7 +41,7 @@ function add_cart(){
         
         $check_product = "select * from cart where ip_add='$ip_add' AND p_id='$p_id'";
         
-        $run_check = mysqli_query($db,$check_product);
+        $run_check = mysqli_query($con,$check_product);
         
         if(mysqli_num_rows($run_check)>0){
             
@@ -53,7 +52,7 @@ function add_cart(){
 
             $get_price ="select * from products where product_id='$p_id'";
 
-            $run_price = mysqli_query($db,$get_price);
+            $run_price = mysqli_query($con,$get_price);
 
             $row_price = mysqli_fetch_array($run_price);
 
@@ -75,7 +74,7 @@ function add_cart(){
             
             $query = "insert into cart (p_id,ip_add,qty,p_price,size) values ('$p_id','$ip_add','$product_qty','$product_price','$product_size')";
             
-            $run_query = mysqli_query($db,$query);
+            $run_query = mysqli_query($con,$query);
             
             echo "<script>window.open('details.php?pro_id=$p_id','_self')</script>";
             
@@ -91,11 +90,11 @@ function add_cart(){
 
 function getPro(){
     
-    global $db;
+    global $con;
     
     $get_products = "select * from products order by 1 DESC LIMIT 0,8";
     
-    $run_products = mysqli_query($db,$get_products);
+    $run_products = mysqli_query($con,$get_products);
     
     while($row_products=mysqli_fetch_array($run_products)){
         
@@ -115,7 +114,7 @@ function getPro(){
 
         $get_manufacturer = "select * from manufacturers where manufacturer_id='$manufacturer_id'";
 
-        $run_manufacturer = mysqli_query($db,$get_manufacturer);
+        $run_manufacturer = mysqli_query($con,$get_manufacturer);
 
         $row_manufacturer = mysqli_fetch_array($run_manufacturer);
 
@@ -224,11 +223,11 @@ function getPro(){
 
 function getPCats(){
     
-    global $db;
+    global $con;
     
     $get_p_cats = "select * from product_categories";
     
-    $run_p_cats = mysqli_query($db,$get_p_cats);
+    $run_p_cats = mysqli_query($con,$get_p_cats);
     
     while($row_p_cats=mysqli_fetch_array($run_p_cats)){
         
@@ -256,11 +255,11 @@ function getPCats(){
 
 function getCats(){
     
-    global $db;
+    global $con;
     
     $get_cats = "select * from categories";
     
-    $run_cats = mysqli_query($db,$get_cats);
+    $run_cats = mysqli_query($con,$get_cats);
     
     while($row_cats=mysqli_fetch_array($run_cats)){
         
@@ -288,16 +287,16 @@ function getCats(){
 
 function items(){
     
-    global $db;
+    global $con;
     
     $ip_add = getRealIpUser();
     
     $get_items = "select * from cart where ip_add='$ip_add'";
     
-    $run_items = mysqli_query($db,$get_items);
+    $run_items = mysqli_query($con,$get_items);
     if (!$run_items) {
         // If the query failed, output the error to help with debugging
-        die('Query Failed: ' . mysqli_error($db));
+        die('Query Failed: ' . mysqli_error($con));
     }
     $count_items = mysqli_num_rows($run_items);
     
@@ -311,7 +310,7 @@ function items(){
 
 function total_price(){
     
-    global $db;
+    global $con;
     
     $ip_add = getRealIpUser();
     
@@ -319,7 +318,7 @@ function total_price(){
     
     $select_cart = "select * from cart where ip_add='$ip_add'";
     
-    $run_cart = mysqli_query($db,$select_cart);
+    $run_cart = mysqli_query($con,$select_cart);
     
     while($record=mysqli_fetch_array($run_cart)){
         
@@ -343,7 +342,7 @@ function total_price(){
 
 function getProducts(){
 
-    global $db;
+    global $con;
     $aWhere = array();
 
     /// Begin for Manufacturer ///
@@ -417,7 +416,7 @@ function getProducts(){
     $sLimit = " order by 1 DESC LIMIT $start_from,$per_page";
     $sWhere = isset($aWhere1) ? ' WHERE ' . $aWhere1 : (count($aWhere)>0?' WHERE '.implode(' or ',$aWhere):'').$sLimit;
     $get_products = isset($aWhere1) ? "select * from products inner join manufacturers on (products.manufacturer_id = manufacturers.manufacturer_id) ".$sWhere : "select * from products ".$sWhere;
-    $run_products = mysqli_query($db,$get_products);
+    $run_products = mysqli_query($con,$get_products);
     while($row_products=mysqli_fetch_array($run_products)){
         
         $pro_id = $row_products['product_id'];
@@ -436,7 +435,7 @@ function getProducts(){
 
         $get_manufacturer = "select * from manufacturers where manufacturer_id='$manufacturer_id'";
 
-        $run_manufacturer = mysqli_query($db,$get_manufacturer);
+        $run_manufacturer = mysqli_query($con,$get_manufacturer);
 
         $row_manufacturer = mysqli_fetch_array($run_manufacturer);
 
@@ -545,7 +544,7 @@ function getProducts(){
 
 function getPaginator(){
 
-    global $db;
+    global $con;
 
     $per_page=6;
     $aWhere = array();
@@ -610,7 +609,7 @@ function getPaginator(){
     
     $sWhere = (count($aWhere)>0?' WHERE '.implode(' or ',$aWhere):'');
     $query = "select * from products".$sWhere;
-    $result = mysqli_query($db,$query);
+    $result = mysqli_query($con,$query);
     $total_records = mysqli_num_rows($result);
     $total_pages = ceil($total_records / $per_page);
 
